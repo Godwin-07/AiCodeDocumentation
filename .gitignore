@@ -58,3 +58,19 @@ yarn-error.log*
 # Generated documentation (for testing)
 DOCUMENTATION.md
 .docignore.txt
+
+# Additional files
+test_docstring_sample.py
+test_indentation_fix.py
+test_integration.py
+TASK_15.1_SUMMARY.md
+TASK_15.2_SUMMARY.md
+TASK_16.1_SUMMARY.md
+TASK_16.2_SUMMARY.md
+NEW_FEATURES_SUMMARY.md
+INDENTATION_FIX_DETAILS.md
+IMPLEMENTATION_PROOF.md
+FINAL_TEST_REPORT.md
+FEATURE_2_FIXES.md
+
+.kiro/

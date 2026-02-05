@@ -1,6 +1,6 @@
 # AI-Enhanced Code Documentation Generator
 
-A VS Code extension that automatically generates comprehensive Markdown documentation for your codebase using static analysis and a locally hosted LLM.
+A powerful VS Code extension that automatically generates comprehensive Markdown documentation for your codebase using static analysis and a locally hosted LLM (Large Language Model).
 
 ## Overview
 
@@ -11,13 +11,20 @@ This project consists of two main components:
 
 ## Features
 
+### Core Features
 - 🔍 **Automatic Discovery**: Recursively scans workspace for Python, JavaScript, and Java files
 - 🚫 **Ignore Patterns**: Supports `.docignore.txt` for excluding files (gitignore-style syntax)
 - 🔒 **Safe Analysis**: Uses only static analysis - never executes your code
-- 🤖 **AI Enhancement**: Leverages local LLM to generate clear, readable documentation
-- 📝 **Markdown Output**: Generates well-structured `DOCUMENTATION.md` with table of contents
+- 🤖 **AI Enhancement**: Leverages local LLM (Ollama) to generate clear, readable documentation
+- 📝 **Markdown Output**: Generates well-structured documentation with table of contents
 - ⚡ **Error Resilient**: Continues processing even if individual files fail
 - 🎯 **Multi-Language**: Supports Python (AST), JavaScript (regex), and Java (regex)
+
+### New Features (v0.2.0)
+- 📄 **Single File Documentation**: Generate documentation for the currently open file only
+- ✨ **AI Docstring Injection**: Add AI-generated docstrings directly to your source code
+- 💾 **Automatic Backups**: Creates backup files before modifying source code
+- 🎨 **Smart Formatting**: Language-aware docstring formatting (Python `"""`, JS/Java `/** */`)
 
 ## Quick Start
 
@@ -26,7 +33,10 @@ This project consists of two main components:
 - VS Code 1.80.0 or higher
 - Node.js 16+ and npm
 - Python 3.8 or higher
-- Local LLM server (e.g., Ollama) running at `https://localhosted:11434/api/chat`
+- **Ollama** with a code model installed (recommended: `codellama:7b` or `llama2:7b`)
+  - Install Ollama: https://ollama.ai/
+  - Pull a model: `ollama pull codellama:7b`
+  - Start Ollama: It runs automatically on `http://localhost:11434`
 
 ### Installation
 
@@ -56,6 +66,7 @@ This project consists of two main components:
 
 ### Usage
 
+#### 1. Generate Workspace Documentation
 1. Open your project workspace in VS Code
 2. (Optional) Create `.docignore.txt` in workspace root:
    ```
@@ -69,38 +80,78 @@ This project consists of two main components:
 4. Run: **Generate Code Documentation**
 5. View the generated `DOCUMENTATION.md` in your workspace root
 
+#### 2. Generate Single File Documentation
+1. Open any Python, JavaScript, or Java file
+2. Open Command Palette (Ctrl+Shift+P)
+3. Run: **Generate Documentation for Current File**
+4. View the generated `<filename>_DOCUMENTATION.md` in the same directory
+
+#### 3. Add AI Docstrings to File
+1. Open any Python, JavaScript, or Java file
+2. Save the file (if unsaved)
+3. Open Command Palette (Ctrl+Shift+P)
+4. Run: **Add AI Docstrings to Current File**
+5. Confirm the action
+6. AI-generated docstrings will be added to your code
+7. A backup file (`<filename>.backup`) is automatically created
+
 ## Configuration
 
 Configure in VS Code settings (File → Preferences → Settings):
 
 ```json
 {
-  "aiCodeDocGenerator.llmEndpoint": "https://localhosted:11434/api/chat",
-  "aiCodeDocGenerator.llmTimeout": 30,
-  "aiCodeDocGenerator.llmModel": "llama2"
+  "aiCodeDocGenerator.llmEndpoint": "http://localhost:11434/api/chat",
+  "aiCodeDocGenerator.llmTimeout": 120,
+  "aiCodeDocGenerator.llmModel": "codellama:7b"
 }
 ```
+
+### Configuration Options
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `llmEndpoint` | `http://localhost:11434/api/chat` | Ollama API endpoint |
+| `llmTimeout` | `120` | Request timeout in seconds |
+| `llmModel` | `codellama:7b` | LLM model name |
+
+### Recommended Models
+
+- **codellama:7b** - Best for code documentation (6GB VRAM)
+- **llama2:7b** - Good general-purpose model (6GB VRAM)
+- **llama2:13b** - Better quality, slower (8GB VRAM)
 
 ## Project Structure
 
 ```
 .
-├── extension/              # VS Code extension (TypeScript)
-│   ├── src/               # Extension source code
-│   ├── package.json       # Extension manifest
-│   ├── tsconfig.json      # TypeScript configuration
-│   └── jest.config.js     # Jest test configuration
+├── extension/                    # VS Code extension (TypeScript)
+│   ├── src/
+│   │   ├── extension.ts         # Extension entry point
+│   │   ├── commands.ts          # Command handlers
+│   │   ├── fileScanner.ts       # Workspace file scanner
+│   │   ├── ignoreParser.ts      # .docignore parser
+│   │   ├── pythonBridge.ts      # Python process manager
+│   │   └── types.ts             # TypeScript types
+│   ├── package.json             # Extension manifest
+│   ├── tsconfig.json            # TypeScript configuration
+│   └── jest.config.js           # Jest test configuration
 │
-├── analysis_engine/       # Python analysis engine
-│   ├── parsers/          # Language-specific parsers
-│   ├── tests/            # Python tests
-│   ├── models.py         # Data structures
-│   ├── llm_client.py     # LLM integration
-│   ├── markdown_generator.py  # Documentation generation
-│   ├── main.py           # Entry point
-│   └── requirements.txt  # Python dependencies
+├── analysis_engine/             # Python analysis engine
+│   ├── parsers/
+│   │   ├── python_parser.py    # Python AST parser
+│   │   ├── javascript_parser.py # JavaScript regex parser
+│   │   └── java_parser.py      # Java regex parser
+│   ├── tests/                   # Python tests
+│   ├── models.py                # Data structures
+│   ├── llm_client.py            # LLM integration
+│   ├── markdown_generator.py    # Documentation generation
+│   ├── docstring_generator.py   # Docstring injection (NEW)
+│   ├── main.py                  # Entry point
+│   └── requirements.txt         # Python dependencies
 │
-└── README.md             # This file
+├── test_workspace/              # Example workspace for testing
+└── README.md                    # This file
 ```
 
 ## Development
@@ -114,7 +165,7 @@ npm run watch      # Watch mode for development
 npm test           # Run tests
 ```
 
-Press F5 in VS Code to launch the Extension Development Host.
+Press **F5** in VS Code to launch the Extension Development Host.
 
 ### Python Engine Development
 
@@ -124,8 +175,6 @@ pytest                    # Run all tests
 pytest -m unit           # Run unit tests only
 pytest -m property       # Run property-based tests only
 pytest --cov=.           # Run with coverage
-black .                  # Format code
-mypy .                   # Type checking
 ```
 
 ## Architecture
@@ -133,12 +182,18 @@ mypy .                   # Type checking
 ### Communication Flow
 
 ```
-User → VS Code Extension → Python Process (stdin/stdout) → LLM API
+User → VS Code Extension → Python Process (stdin/stdout) → Ollama API
                 ↓                    ↓
          Progress UI          File Analysis
                                      ↓
                               DOCUMENTATION.md
 ```
+
+### Modes of Operation
+
+1. **Workspace Mode** (default): Generates documentation for all files in workspace
+2. **Single File Mode**: Generates documentation for one file only
+3. **Add Docstrings Mode**: Modifies source code to add AI-generated docstrings
 
 ### Key Design Principles
 
@@ -147,6 +202,7 @@ User → VS Code Extension → Python Process (stdin/stdout) → LLM API
 - **Graceful Degradation**: Works without LLM (basic documentation)
 - **Sequential Processing**: One file at a time to limit memory usage
 - **Progress Transparency**: Real-time progress updates for large codebases
+- **Backup Protection**: Always creates backups before modifying source files
 
 ## Testing Strategy
 
@@ -158,6 +214,35 @@ The project uses both unit tests and property-based tests:
 Coverage goals:
 - Extension: >80% code coverage
 - Python Engine: >85% code coverage
+
+## Hardware Requirements
+
+### Minimum
+- CPU: Dual-core processor
+- RAM: 8GB
+- GPU: Not required (CPU-only mode works)
+
+### Recommended
+- CPU: Quad-core processor (Ryzen 5 / Intel i5 or better)
+- RAM: 16GB
+- GPU: 6GB VRAM (for codellama:7b or llama2:7b)
+
+## Troubleshooting
+
+### LLM Timeout Errors
+- Increase timeout: `"aiCodeDocGenerator.llmTimeout": 180`
+- Use a smaller model: `"aiCodeDocGenerator.llmModel": "codellama:7b"`
+- Check Ollama is running: `ollama list`
+
+### Python Not Found
+- Install Python 3.8+: https://www.python.org/downloads/
+- Ensure Python is in PATH
+- Restart VS Code after installation
+
+### Indentation Errors (Python)
+- Ensure your source file has consistent indentation before adding docstrings
+- Check the backup file (`.backup`) if issues occur
+- The extension preserves your original indentation style
 
 ## Contributing
 
@@ -171,6 +256,24 @@ Coverage goals:
 ## License
 
 MIT
+
+## Changelog
+
+### v0.2.0 (Latest)
+- ✨ Added single file documentation generation
+- ✨ Added AI docstring injection feature
+- 🐛 Fixed indentation issues in Python docstrings
+- 🐛 Fixed multi-line comment formatting
+- 🔧 Changed default model to `codellama:7b`
+- 🔧 Increased default timeout to 120 seconds
+- 🔧 Fixed default endpoint to `http://localhost:11434`
+
+### v0.1.0
+- 🎉 Initial release
+- 📝 Workspace documentation generation
+- 🤖 LLM integration with Ollama
+- 🚫 .docignore support
+- 🎯 Multi-language support (Python, JavaScript, Java)
 
 ## Support
 
