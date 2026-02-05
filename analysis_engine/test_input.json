@@ -1,0 +1,10 @@
+{
+  "workspacePath": ".",
+  "files": [
+    "parsers/python_parser.py",
+    "models.py"
+  ],
+  "llmEndpoint": "http://localhost:11434/api/chat",
+  "llmModel": "llama2",
+  "llmTimeout": 2
+}

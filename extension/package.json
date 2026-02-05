@@ -1,0 +1,69 @@
+{
+  "name": "ai-code-doc-generator",
+  "displayName": "AI Code Documentation Generator",
+  "description": "Automatically generate structured Markdown documentation for source code using static analysis and a locally hosted LLM",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai-code-doc-generator.generateDocumentation",
+        "title": "Generate Code Documentation"
+      },
+      {
+        "command": "ai-code-doc-generator.generateForCurrentFile",
+        "title": "Generate Documentation for Current File"
+      },
+      {
+        "command": "ai-code-doc-generator.addDocstrings",
+        "title": "Add AI Docstrings to Current File"
+      }
+    ],
+    "configuration": {
+      "title": "AI Code Documentation Generator",
+      "properties": {
+        "aiCodeDocGenerator.llmEndpoint": {
+          "type": "string",
+          "default": "http://localhost:11434/api/chat",
+          "description": "LLM API endpoint URL"
+        },
+        "aiCodeDocGenerator.llmTimeout": {
+          "type": "number",
+          "default": 120,
+          "description": "LLM request timeout in seconds"
+        },
+        "aiCodeDocGenerator.llmModel": {
+          "type": "string",
+          "default": "codellama:7b",
+          "description": "LLM model name"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.40.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "minimatch": "^9.0.0"
+  }
+}
