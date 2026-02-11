@@ -11,6 +11,24 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aiCodeDocGenerator",
+          "title": "AI Code Doc Generator",
+          "icon": "$(book)"
+        }
+      ]
+    },
+    "views": {
+      "aiCodeDocGenerator": [
+        {
+          "type": "webview",
+          "id": "aiCodeDocGenerator.sidebar",
+          "name": "Documentation Generator"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "ai-code-doc-generator.generateDocumentation",
@@ -42,6 +60,18 @@
           "type": "string",
           "default": "codellama:7b",
           "description": "LLM model name"
+        },
+        "aiCodeDocGenerator.documentationTemplate": {
+          "type": "string",
+          "default": "standard",
+          "enum": ["standard", "minimal", "api", "tutorial"],
+          "enumDescriptions": [
+            "Standard - Comprehensive documentation with all details",
+            "Minimal - Brief overview only",
+            "API Reference - Focused on function signatures and parameters",
+            "Tutorial - Explanatory style with examples"
+          ],
+          "description": "Documentation template style"
         }
       }
     }

@@ -79,6 +79,7 @@ export async function generateDocumentation(): Promise<void> {
         const llmEndpoint = config.get<string>('llmEndpoint', 'https://localhosted:11434/api/chat');
         const llmTimeout = config.get<number>('llmTimeout', 50);
         const llmModel = config.get<string>('llmModel', 'llama2:13b');
+        const template = config.get<string>('documentationTemplate', 'standard');
         
         // Step 4: Prepare input for Python engine
         const pythonInput: PythonEngineInput = {
@@ -86,7 +87,8 @@ export async function generateDocumentation(): Promise<void> {
           files: scanResult.files,
           llmEndpoint,
           llmTimeout,
-          llmModel
+          llmModel,
+          template
         };
         
         // Step 5: Spawn Python analysis engine (Requirement 8.1)

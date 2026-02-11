@@ -23,6 +23,8 @@ This project consists of two main components:
 ### New Features (v0.2.0)
 - 📄 **Single File Documentation**: Generate documentation for the currently open file only
 - ✨ **AI Docstring Injection**: Add AI-generated docstrings directly to your source code
+- 🎨 **Multiple Templates**: Choose from 4 documentation styles (Standard, Minimal, API, Tutorial)
+- 🎨 **Sidebar UI**: Beautiful sidebar panel for easy access to all features and settings
 - 💾 **Automatic Backups**: Creates backup files before modifying source code
 - 🎨 **Smart Formatting**: Language-aware docstring formatting (Python `"""`, JS/Java `/** */`)
 
@@ -66,6 +68,23 @@ This project consists of two main components:
 
 ### Usage
 
+#### Using the Sidebar (Recommended)
+1. Click the book icon (📚) in the Activity Bar (left side)
+2. The AI Code Doc Generator sidebar will open
+3. Use the quick action buttons:
+   - **Generate Workspace Docs** - Document entire workspace
+   - **Generate Current File Docs** - Document open file
+   - **Add AI Docstrings** - Add docstrings to code
+4. Configure settings directly in the sidebar
+5. Select your preferred documentation template
+
+#### Using Command Palette
+1. Open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
+2. Type one of these commands:
+   - **Generate Code Documentation**
+   - **Generate Documentation for Current File**
+   - **Add AI Docstrings to Current File**
+
 #### 1. Generate Workspace Documentation
 1. Open your project workspace in VS Code
 2. (Optional) Create `.docignore.txt` in workspace root:
@@ -97,13 +116,21 @@ This project consists of two main components:
 
 ## Configuration
 
+### Using the Sidebar (Easy Way)
+1. Click the book icon (📚) in the Activity Bar
+2. Scroll to the Settings section
+3. Change any setting using the visual controls
+4. Settings are saved automatically
+
+### Using VS Code Settings (Advanced)
 Configure in VS Code settings (File → Preferences → Settings):
 
 ```json
 {
   "aiCodeDocGenerator.llmEndpoint": "http://localhost:11434/api/chat",
   "aiCodeDocGenerator.llmTimeout": 120,
-  "aiCodeDocGenerator.llmModel": "codellama:7b"
+  "aiCodeDocGenerator.llmModel": "codellama:7b",
+  "aiCodeDocGenerator.documentationTemplate": "standard"
 }
 ```
 
@@ -114,6 +141,7 @@ Configure in VS Code settings (File → Preferences → Settings):
 | `llmEndpoint` | `http://localhost:11434/api/chat` | Ollama API endpoint |
 | `llmTimeout` | `120` | Request timeout in seconds |
 | `llmModel` | `codellama:7b` | LLM model name |
+| `documentationTemplate` | `standard` | Template style (standard, minimal, api, tutorial) |
 
 ### Recommended Models
 
@@ -262,6 +290,8 @@ MIT
 ### v0.2.0 (Latest)
 - ✨ Added single file documentation generation
 - ✨ Added AI docstring injection feature
+- ✨ Added multiple documentation templates (Standard, Minimal, API, Tutorial)
+- ✨ Added beautiful sidebar UI for easy access to all features
 - 🐛 Fixed indentation issues in Python docstrings
 - 🐛 Fixed multi-line comment formatting
 - 🔧 Changed default model to `codellama:7b`

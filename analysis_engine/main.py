@@ -25,6 +25,7 @@ from analysis_engine.parsers.java_parser import parse_java_file
 from analysis_engine.llm_client import send_to_llm
 from analysis_engine.markdown_generator import generate_markdown, write_documentation
 from analysis_engine.docstring_generator import generate_docstrings_for_file
+from analysis_engine.templates import get_template
 
 # Configure logging
 logging.basicConfig(
@@ -190,7 +191,8 @@ def handle_workspace_mode(
     workspace_path: str,
     llm_endpoint: str,
     llm_model: str,
-    llm_timeout: int
+    llm_timeout: int,
+    template: str = 'standard'
 ) -> None:
     """Handle workspace documentation generation mode."""
     errors = []
@@ -204,9 +206,14 @@ def handle_workspace_mode(
         workspace_path=workspace_path
     )
     
-    # Generate Markdown document
-    logger.info("Generating Markdown documentation...")
-    markdown_content = generate_markdown(all_metadata)
+    # Generate Markdown document using selected template
+    logger.info(f"Generating Markdown documentation using '{template}' template...")
+    try:
+        template_obj = get_template(template)
+        markdown_content = template_obj.generate(all_metadata)
+    except ValueError as e:
+        logger.warning(f"Invalid template '{template}', falling back to standard: {e}")
+        markdown_content = generate_markdown(all_metadata)
     
     # Write DOCUMENTATION.md to workspace root
     documentation_path = os.path.join(workspace_path, 'DOCUMENTATION.md')
@@ -412,6 +419,7 @@ def main() -> None:
         llm_timeout = input_data.get('llmTimeout', 30)
         mode = input_data.get('mode', 'workspace')  # New: mode parameter
         output_file_name = input_data.get('outputFileName', 'DOCUMENTATION.md')  # New: custom output name
+        template = input_data.get('template', 'standard')  # New: template selection
         
         # Validate input
         if not workspace_path:
@@ -431,7 +439,7 @@ def main() -> None:
             return
         
         logger.info(f"Processing {len(files)} file(s) from workspace: {workspace_path}")
-        logger.info(f"Mode: {mode}, LLM endpoint: {llm_endpoint}, model: {llm_model}, timeout: {llm_timeout}s")
+        logger.info(f"Mode: {mode}, Template: {template}, LLM endpoint: {llm_endpoint}, model: {llm_model}, timeout: {llm_timeout}s")
         
         # Handle different modes
         if mode == 'add-docstrings':
@@ -447,7 +455,7 @@ def main() -> None:
         else:
             # Default mode: Generate documentation for entire workspace
             handle_workspace_mode(
-                files, workspace_path, llm_endpoint, llm_model, llm_timeout
+                files, workspace_path, llm_endpoint, llm_model, llm_timeout, template
             )
         
     except json.JSONDecodeError as e:

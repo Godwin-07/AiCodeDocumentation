@@ -4,6 +4,7 @@
 
 import * as vscode from 'vscode';
 import { generateDocumentation, generateForCurrentFile, addDocstringsToCurrentFile } from './commands';
+import { DocGeneratorSidebarProvider } from './sidebarProvider';
 
 /**
  * Called when the extension is activated
@@ -11,6 +12,15 @@ import { generateDocumentation, generateForCurrentFile, addDocstringsToCurrentFi
  */
 export function activate(context: vscode.ExtensionContext): void {
   console.log('AI Code Documentation Generator extension is now active');
+
+  // Register the sidebar provider
+  const sidebarProvider = new DocGeneratorSidebarProvider(context.extensionUri);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      DocGeneratorSidebarProvider.viewType,
+      sidebarProvider
+    )
+  );
 
   // Register the "Generate Code Documentation" command
   const generateDocCommand = vscode.commands.registerCommand(

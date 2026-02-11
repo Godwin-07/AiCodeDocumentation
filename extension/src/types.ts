@@ -38,6 +38,14 @@ export interface PythonEngineInput {
   llmTimeout: number;
   /** LLM model name */
   llmModel: string;
+  /** Documentation template style (optional) */
+  template?: string;
+  /** Mode of operation (optional) */
+  mode?: string;
+  /** Output file name (optional) */
+  outputFileName?: string;
+  /** Backup path (optional) */
+  backupPath?: string;
 }
 
 /**
